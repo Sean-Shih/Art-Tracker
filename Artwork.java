@@ -13,7 +13,7 @@ public class Artwork {
 	/** artTitle represents the artwork's title */
 	private String artTitle;
 	/** filename represents the artwork's filepath/name */
-	private File filename;
+	private String filename;
 	/** caption represents the artwork's caption */
 	private String caption;
 	/** date stores the date when the artwork was saved */
@@ -23,8 +23,12 @@ public class Artwork {
 	 * Constructor
 	 * 
 	 * */
-	Artwork() {
-		
+	Artwork(String artTitle, String filename, String caption, LocalDate date) {
+		this.artTitle = artTitle;
+		this.filename = filename;
+		this.caption = caption;
+		this.date = date;
+//		this.date = date;
 	}
 	
 	/**
@@ -41,7 +45,7 @@ public class Artwork {
 	 * 
 	 * @return
 	 */
-	public File getFilename() {
+	public String getFilename() {
 		return this.filename;
 	}
 	
@@ -77,7 +81,7 @@ public class Artwork {
 	 * 
 	 * @param filename
 	 */
-	public void setFilename(File filename) {
+	public void setFilename(String filename) {
 		this.filename = filename;
 	}
 	

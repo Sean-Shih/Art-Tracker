@@ -5,6 +5,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -24,8 +25,16 @@ import java.awt.datatransfer.DataFlavor;
 import java.io.File;
 import java.util.List;
 
+/**
+ * 
+ * GUI class for the main menu of the application
+ * 
+ * @author seanshih
+ * 
+ */
 public class MainMenu extends JFrame implements ActionListener {
 
+	/** Private variables for the height and width of the various panels in the frame */
 	private static final int UPPANELWIDTH = 700;
 	private static final int UPPANELHEIGHT = 800;
 	
@@ -35,25 +44,64 @@ public class MainMenu extends JFrame implements ActionListener {
 	private static final int BPANELWIDTH = 500;
 	private static final int BPANELHEIGHT = 700;
 
+	/** used to pass artwork details between frames (may have to change later */
+	private List<Artwork> artworks;
+	  // Load from artworks.json at startup
 	private Artwork artwork;
 	
+	/** main menu frame*/
 	JFrame frame = new JFrame();
+	
+	/** panel to contain buttons and elements related to uploading an artwork */
+	JPanel uploadPanel;
+	
+	/** panel to display the title */
+	JPanel titlePanel;
+	
+	/** panel for button area */
+	JPanel buttonPanel;
+	
+	/** label for users to drag artwork into */
+	JLabel drag;
+	
+	/** label for the title*/
+	JLabel title;
+	
+	/** button for navigating to "view artwork" frame */
 	JButton viewButton;
+	
+	/** button for selecting an artwork from the local computer to upload */
 	JButton selArtButton;
+	
+	/** button to upload the artwork into the application */
 	JButton uploadButton;
+	
+	/** button to show short tutorial on how to navigate the current frame */
 	JButton infoButton;
+	
+	/** calls {@link GetLocalDate.java} to get today's date (formatted) */
 	GetLocalDate date;
+	
+	/** text area for user to enter a caption for the artwork */
 	JTextArea captionArea;
+	
+	/** text area for user to enter a title for the artwork */
 	JTextArea artTitleArea;
 	
-	
-	MainMenu(Artwork artwork) {
+	/**
+	 * 
+	 * Initialized a JFrame that serves as the main menu
+	 *  
+	 * @param artwork
+	 */
+	MainMenu() {
 		
+		artworks = JsonStorage.loadArtworks();
 		this.artwork = artwork;
 		
-		// ----------------------- Frame -------------------------------
-		
-//		JFrame frame = new JFrame();
+		/**
+		 * Sets the size, title, and various operations for the main menu frame
+		 */
 		frame.setTitle("Daily Art Tracker");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(null);
@@ -61,13 +109,18 @@ public class MainMenu extends JFrame implements ActionListener {
 		frame.setLocationRelativeTo(null);
 		frame.setResizable(false);
 		
-		// -------------------- Upload Art Panel -----------------------
 		
-		JPanel uploadPanel = new JPanel();
+		/** 
+		 * Sets color and bounds for the upload panel
+		 */
+		uploadPanel = new JPanel();
 		uploadPanel.setLayout(null);
 		uploadPanel.setBackground(Color.darkGray);
 		uploadPanel.setBounds(500, 0, UPPANELWIDTH, UPPANELHEIGHT);
 		
+		/**
+		 * text area for adding a caption for the artwork
+		 */
 		captionArea = new JTextArea("Enter a caption here");
 		captionArea.setOpaque(true);
 		captionArea.setBounds(300, 550, 300, 40);
@@ -75,42 +128,58 @@ public class MainMenu extends JFrame implements ActionListener {
 		captionArea.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		captionArea.setCaretColor(Color.black);
 		
+		/**
+		 * Lets user select an image file from their computer to upload
+		 */
 		selArtButton = new JButton("Select Artwork");
 		selArtButton.setFont(new Font(null, Font.PLAIN, 20));
 		selArtButton.setBounds(125, 650, 200, 60);
 		selArtButton.setFocusable(false);
 		selArtButton.addActionListener(this);
 		
+		/**
+		 * Confirmation button for uploading the date's artwork
+		 */
 		uploadButton = new JButton("Upload");
 		uploadButton.setFont(new Font(null, Font.PLAIN, 20));
 		uploadButton.setBounds(375, 650, 200, 60);
 		uploadButton.setFocusable(false);
 		uploadButton.addActionListener(this);
-		
-//		Border border = BorderFactory.createLineBorder(Color.black, 3);
-		
+	
+		/**
+		 * Displays the current date for the user based on the machine
+		 * 
+		 * @see GetLocalDate.java
+		 */
 		date = new GetLocalDate();
 		JLabel dateLabel = new JLabel(date.FormatDate());
 		dateLabel.setFont(new Font("Serif", Font.PLAIN, 30));
 		dateLabel.setForeground(new Color(255, 255, 255));
-//		dateLabel.setBorder(border);
 		dateLabel.setBounds(30, 10, 300, 60);
 		
+		
+		/**
+		 * Title area for users to enter a title for the artwork
+		 */
 		artTitleArea = new JTextArea("Enter Title");
 		artTitleArea.setBounds(70, 557, 200, 25);	
 		artTitleArea.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		artTitleArea.setCaretColor(Color.black);
 		artTitleArea.setOpaque(true);
 		
-		JLabel preview = new JLabel("Drag your artwork here", SwingConstants.CENTER);
-		preview.setFont(new Font("Serif", Font.ITALIC, 30));
-		preview.setBounds(125, 80, 450, 450);
-		preview.setBorder(BorderFactory.createLineBorder(Color.black, 5));
-		preview.setOpaque(true);
-		preview.setForeground(Color.lightGray);
-		preview.setBackground(Color.white);
+		/**
+		 * JLabel for users to physically drag their artwork into to upload
+		 */
+		drag = new JLabel("Drag your artwork here", SwingConstants.CENTER);
+		drag.setFont(new Font("Serif", Font.ITALIC, 30));
+		drag.setBounds(125, 80, 450, 450);
+		drag.setBorder(BorderFactory.createLineBorder(Color.black, 5));
+		drag.setOpaque(true);
+		drag.setForeground(Color.lightGray);
+		drag.setBackground(Color.white);
 		
-		preview.setTransferHandler(new TransferHandler() {
+		/** Handles the drag n drop aspect of the drag JLabel */
+		drag.setTransferHandler(new TransferHandler() {
             @Override
             public boolean canImport(TransferSupport support) {
                 return support.isDataFlavorSupported(DataFlavor.javaFileListFlavor);
@@ -123,14 +192,11 @@ public class MainMenu extends JFrame implements ActionListener {
                     List<File> files = (List<File>) support.getTransferable()
                             .getTransferData(DataFlavor.javaFileListFlavor);
 
-                    for (File file : files) { // may have to change to explicitly needing to press "upload" to upload
+                    for (File file : files) { 
                         if (file.getName().toLowerCase().matches(".*\\.(png|jpg|jpeg|gif)$")) {
-                        	artwork.setFilename(file);
-//                        	artwork.setCaption(captionArea.getText());
-//                			artwork.setArtTitle(artTitleArea.getText());
-//                			artwork.setDate();
-//                			captionArea.setEditable(false);
-//                        	System.out.println(file.getAbsolutePath());
+                        	drag.setIcon(new ImageIcon(file.getAbsolutePath()));
+                        	drag.setText(null);
+//                        	artwork.setFilename(file);
                         } else {
                             JOptionPane.showMessageDialog(null, "Please upload an image file.");
                         }
@@ -142,32 +208,41 @@ public class MainMenu extends JFrame implements ActionListener {
                 return false;
             }
         });
-		
-		
-		// -------------------- Title Panel ----------------------------
 
-		JPanel titlePanel = new JPanel(new BorderLayout());
-//		titlePanel.setBackground(new Color(192,192,192));
+		/** 
+		 * JPanel to display the application's title
+		 */
+		titlePanel = new JPanel(new BorderLayout());
 		titlePanel.setBounds(0, 0, TPANELWIDTH, TPANELHEIGHT);
 		
-		JLabel title = new JLabel();
+		/** 
+		 * Label for the title 
+		 */
+		title = new JLabel();
 		title.setText("Daily Art Tracker");
 		title.setFont(new Font("Times New Roman", Font.PLAIN, 50));
 		title.setHorizontalAlignment(JLabel.CENTER);
 		title.setBorder(BorderFactory.createMatteBorder(5, 0, 5, 0, Color.darkGray));
 		
-		// ---------------------- Button Panel --------------------------
-		
-		JPanel buttonPanel = new JPanel();
+		/**
+		 * Panel for buttons to lead to various functions (current and future) 
+		 */
+		buttonPanel = new JPanel();
 		buttonPanel.setLayout(null);
 		buttonPanel.setBounds(0, 100, BPANELWIDTH, BPANELHEIGHT);
 		
+		/**
+		 * JButton to lead user to new frame to view old artwork
+		 */
 		viewButton = new JButton("View artworks");
 		viewButton.setFont(new Font(null, Font.PLAIN, 20));
 		viewButton.setBounds(150, 30, 200, 60); 
 		viewButton.setFocusable(false);
 		viewButton.addActionListener(this);
 		
+		/**
+		 * button to show user how to navigate the page
+		 */
 		infoButton = new JButton();
 		infoButton.setIcon(new ImageIcon("src/Info-Button.png"));
 		infoButton.setBorderPainted(false);
@@ -175,14 +250,16 @@ public class MainMenu extends JFrame implements ActionListener {
 		infoButton.setFocusable(false);
 		infoButton.addActionListener(this);
 		
-		
+		/**
+		 * adding all panels and their components to the overall frame
+		 */
 		titlePanel.add(title, BorderLayout.CENTER);
 		uploadPanel.add(selArtButton);
 		uploadPanel.add(uploadButton);
 		uploadPanel.add(artTitleArea);
 		uploadPanel.add(captionArea);
 		uploadPanel.add(infoButton);
-		uploadPanel.add(preview);
+		uploadPanel.add(drag);
 		uploadPanel.add(dateLabel);
 		buttonPanel.add(viewButton);
 		frame.add(uploadPanel);
@@ -190,30 +267,55 @@ public class MainMenu extends JFrame implements ActionListener {
 		frame.add(buttonPanel);
 		frame.setVisible(true);
 	}
-	
-	public String getCaption() {
-		return captionArea.getText();
-	}
 		
+	/**
+	 * listens to button interactions
+	 * 
+	 * @param e changes depending on which button is clicked
+	 * 
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
+		/** button to select artwork from disc */
 		if (e.getSource() == selArtButton) {
 			
 			JFileChooser fileChooser = new JFileChooser();
 			int response = fileChooser.showOpenDialog(null);
 			
 			if (response == JFileChooser.APPROVE_OPTION) {
-				artwork.setFilename(new File(fileChooser.getSelectedFile().getAbsolutePath()));
+				artwork.setFilename(fileChooser.getSelectedFile().getAbsolutePath());
 			}	
 		}
 		
+		/** button to view today's artwork and older artworks */
 		if (e.getSource() == viewButton) {
 			frame.dispose();
-			ArtSelectionMenu artMenu = new ArtSelectionMenu(artwork);
+			ArtSelectionMenu artMenu = new ArtSelectionMenu();
 		}
 		
+		/** button to confirm uploading of today's artwork */
 		if (e.getSource() == uploadButton) {
+			
+			
+			JFileChooser fileChooser = new JFileChooser();
+			int result = fileChooser.showOpenDialog(this);
+			
+			if (result == JFileChooser.APPROVE_OPTION) {
+				File selFile = fileChooser.getSelectedFile();
+				String title = artTitleArea.getText();
+				String caption = captionArea.getText();
+//				LocalDate date = artwork.getDate(); // ?
+				
+				Artwork newArt = new Artwork(title, selFile.getAbsolutePath(), caption, LocalDate.now());
+				artworks.add(newArt);
+				
+				JsonStorage.saveArtworks(artworks);
+		        JOptionPane.showMessageDialog(this, "Artwork uploaded and saved!");
+				
+			}
+			
+			/*
 			if (artwork.getFilename() == null) {
 				JOptionPane.showMessageDialog(null, "No artwork uploaded!", "Error", JOptionPane.ERROR_MESSAGE);	
 
@@ -226,10 +328,11 @@ public class MainMenu extends JFrame implements ActionListener {
 				
 				JOptionPane.showMessageDialog(null, "Artwork uploaded!", "Upload confirmation", JOptionPane.INFORMATION_MESSAGE);	
 			}
-			
+			*/
 			
 		}
 		
+		/** button to tell user how to navigate the frame */
 		if (e.getSource() == infoButton) {
 			JOptionPane.showMessageDialog(null, "You can upload an image by dragging it or selecting the \"Select Artwork\" button.\n"
 					+ "Press the \"Upload\" button to upload your artwork for today.\n"

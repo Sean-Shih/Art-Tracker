@@ -1,8 +1,13 @@
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class Main { 
 	
+	private List<Artwork> artworks;
+
 	public static void main (String[] args) {	
-		Artwork artwork = new Artwork();
-		MainMenu frame = new MainMenu(artwork);   
+		MainMenu frame = new MainMenu();   
 		
 	}
    

@@ -30,7 +30,13 @@ import javax.swing.SwingConstants;
 
 import com.toedter.calendar.*;
 
-
+/**
+ * 
+ * GUI class for user to view all artworks that have been uploaded
+ * 
+ * @author seanshih
+ * 
+ */
 public class ArtSelectionMenu extends JFrame implements ActionListener{
 	
 	private static final int APANELWIDTH = 600;
@@ -44,11 +50,13 @@ public class ArtSelectionMenu extends JFrame implements ActionListener{
 	private LocalDate conDate;
 	
 	JFrame frame = new JFrame();
+	JPanel calPanel;
+	JPanel artPanel;
+	JCalendar calendar;
 	JButton backButton;
 	JButton downloadButton;
 	JButton deleteButton;
 	JButton infoButton;
-//	JButton uploadButton;
 	JTextArea captionArea;
 	JTextArea artTitleArea;
 	MainMenu menu;
@@ -56,7 +64,7 @@ public class ArtSelectionMenu extends JFrame implements ActionListener{
 	JLabel artworkLabel;
 	JLabel title;
 	
-	ArtSelectionMenu(Artwork artwork) {
+	ArtSelectionMenu() {
 		
 		
 		this.artwork = artwork;
@@ -73,7 +81,7 @@ public class ArtSelectionMenu extends JFrame implements ActionListener{
 		
 		// -------------------- Calendar Panel -------------------------
 		
-		JPanel calPanel = new JPanel();
+		calPanel = new JPanel();
 		calPanel.setLayout(null);
 		calPanel.setBounds(0, 0, CPANELWIDTH, CPANELHEIGHT);
 		
@@ -83,7 +91,7 @@ public class ArtSelectionMenu extends JFrame implements ActionListener{
 		title.setText("View Artwork");
 		title.setHorizontalAlignment(SwingConstants.LEFT);
 		
-		JCalendar calendar = new JCalendar();
+		calendar = new JCalendar();
 		calendar.setBounds(50, 150, 500, 400);
 		calendar.setBorder(BorderFactory.createEtchedBorder());
 		calendar.setMaxSelectableDate(new Date());
@@ -129,7 +137,7 @@ public class ArtSelectionMenu extends JFrame implements ActionListener{
 		
 		// ----------------------- Art Panel ---------------------------
 		
-		JPanel artPanel = new JPanel();
+		artPanel = new JPanel();
 //		JPanel uploadPanel = new JPanel();
 		artPanel.setLayout(null);
 		artPanel.setBounds(600, 0, APANELWIDTH, APANELHEIGHT);
@@ -252,7 +260,7 @@ public class ArtSelectionMenu extends JFrame implements ActionListener{
 		
 		if (e.getSource() == backButton) {
 			frame.dispose();
-			MainMenu menu = new MainMenu(artwork);
+			MainMenu menu = new MainMenu();
 		}
 		
 		if (e.getSource() == deleteButton) {
