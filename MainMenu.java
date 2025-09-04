@@ -6,6 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.List;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.time.LocalDate;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -37,6 +40,8 @@ public class MainMenu extends JFrame implements ActionListener {
 
 	private Artwork artwork;
 	
+	Queries query = new Queries();
+	
 	JFrame frame = new JFrame();
 	JButton viewButton;
 	JButton selArtButton;
@@ -45,9 +50,11 @@ public class MainMenu extends JFrame implements ActionListener {
 	GetLocalDate date;
 	JTextArea captionArea;
 	JTextArea artTitleArea;
+	ImageIcon previewImage = null;
+	File physFile;
 	
 	
-	MainMenu(Artwork artwork) {
+	MainMenu() {
 		
 		this.artwork = artwork;
 		
@@ -125,12 +132,11 @@ public class MainMenu extends JFrame implements ActionListener {
 
                     for (File file : files) { // may have to change to explicitly needing to press "upload" to upload
                         if (file.getName().toLowerCase().matches(".*\\.(png|jpg|jpeg|gif)$")) {
-                        	artwork.setFilename(file);
-//                        	artwork.setCaption(captionArea.getText());
-//                			artwork.setArtTitle(artTitleArea.getText());
-//                			artwork.setDate();
-//                			captionArea.setEditable(false);
-//                        	System.out.println(file.getAbsolutePath());
+                        	physFile = file;
+                        	previewImage = new ImageIcon(file.getAbsolutePath());
+                        	preview.setIcon(previewImage);
+                        	preview.setText(null);
+                        	
                         } else {
                             JOptionPane.showMessageDialog(null, "Please upload an image file.");
                         }
@@ -169,7 +175,7 @@ public class MainMenu extends JFrame implements ActionListener {
 		viewButton.addActionListener(this);
 		
 		infoButton = new JButton();
-		infoButton.setIcon(new ImageIcon("src/Info-Button.png"));
+		infoButton.setIcon(new ImageIcon("Info-Button.png"));
 		infoButton.setBorderPainted(false);
 		infoButton.setBounds(650, 0, 50, 50);
 		infoButton.setFocusable(false);
@@ -204,25 +210,28 @@ public class MainMenu extends JFrame implements ActionListener {
 			int response = fileChooser.showOpenDialog(null);
 			
 			if (response == JFileChooser.APPROVE_OPTION) {
-				artwork.setFilename(new File(fileChooser.getSelectedFile().getAbsolutePath()));
+				artwork.setFilename(fileChooser.getSelectedFile().getAbsolutePath());
 			}	
 		}
 		
 		if (e.getSource() == viewButton) {
 			frame.dispose();
-			ArtSelectionMenu artMenu = new ArtSelectionMenu(artwork);
+			ArtSelectionMenu artMenu = new ArtSelectionMenu();
 		}
 		
 		if (e.getSource() == uploadButton) {
-			if (artwork.getFilename() == null) {
+			if (previewImage == null) {
 				JOptionPane.showMessageDialog(null, "No artwork uploaded!", "Error", JOptionPane.ERROR_MESSAGE);	
 
 			} else {
-				artwork.setCaption(captionArea.getText());
-				artwork.setArtTitle(artTitleArea.getText());
-				artwork.setDate();
-				captionArea.setEditable(false);
-				artTitleArea.setEditable(false);
+//				artwork.setCaption(captionArea.getText());
+//				artwork.setArtTitle(artTitleArea.getText());
+//				artwork.setDate();
+//				captionArea.setEditable(false);
+//				artTitleArea.setEditable(false);
+				
+//				query.addArtQuery(artwork.getArtTitle(), artwork.getCaption(), artwork.getFilename(), artwork.getDate());
+				query.addArtQuery(artTitleArea.getText(), captionArea.getText(), physFile.getAbsolutePath(), LocalDate.now().toString());
 				
 				JOptionPane.showMessageDialog(null, "Artwork uploaded!", "Upload confirmation", JOptionPane.INFORMATION_MESSAGE);	
 			}

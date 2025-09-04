@@ -11,7 +11,7 @@ public class GetLocalDate {
 	}
 	
 	public String FormatDate() {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM dd, yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
 	    String formattedDate = this.date.format(formatter);
 	    return formattedDate;
 	}

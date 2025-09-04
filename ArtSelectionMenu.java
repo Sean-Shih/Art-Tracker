@@ -41,7 +41,9 @@ public class ArtSelectionMenu extends JFrame implements ActionListener{
 
 	private Artwork artwork;
 	private Date selDate;
-	private LocalDate conDate;
+	private String convertedDate;
+	
+	Queries query = new Queries();
 	
 	JFrame frame = new JFrame();
 	JButton backButton;
@@ -56,7 +58,7 @@ public class ArtSelectionMenu extends JFrame implements ActionListener{
 	JLabel artworkLabel;
 	JLabel title;
 	
-	ArtSelectionMenu(Artwork artwork) {
+	ArtSelectionMenu() {
 		
 		
 		this.artwork = artwork;
@@ -104,16 +106,35 @@ public class ArtSelectionMenu extends JFrame implements ActionListener{
 		
 		calendar.addPropertyChangeListener("calendar", e -> {
 		    selDate = calendar.getDate();
-		    conDate = selDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		    LocalDate tempDate = artwork.getDate();
+		    convertedDate = selDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString();
+//		    String tempDate = artwork.getDate();
+		    
+		    
+		    
+//		    System.out.println(convertedDate);
+//		    System.out.println(tempDate);
+		    
+//		    LocalDate tempDate = artwork.getDate();
+		    
+		    String[] metadata = query.selectFromQuery(convertedDate);
+		    
 		    try {
-			    if (tempDate.toString().equals(conDate.toString())) {
-			    	captionArea.setText(artwork.getCaption());
-					artTitleArea.setText(artwork.getArtTitle());
-					art = new ImageIcon(artwork.getFilename().toString());
+		    	if (metadata != null) {
+		    		
+		    		artTitleArea.setText(metadata[0]);
+		    		captionArea.setText(metadata[1]);
+		    		art = new ImageIcon(metadata[2]);
+//					artworkLabel.setIcon(art);
 					artworkLabel.setIcon(art);
 					artworkLabel.setText("");
-			    } else {
+		    		
+		    		
+//		    		captionArea.setText(artwork.getCaption());
+//					artTitleArea.setText(artwork.getArtTitle());
+//					art = new ImageIcon(artwork.getFilename().toString());
+//					artworkLabel.setIcon(art);
+//					artworkLabel.setText("");
+		    	} else {
 			    	artworkLabel.setIcon(null);
 			    	artworkLabel.setText("No artwork for current date");
 			    	captionArea.setText("");
@@ -126,6 +147,17 @@ public class ArtSelectionMenu extends JFrame implements ActionListener{
 				
 		    }
 		});
+		
+		/*
+		 * if (tempDate.toString().equals(conDate.toString())) {
+			    	captionArea.setText(artwork.getCaption());
+					artTitleArea.setText(artwork.getArtTitle());
+					art = new ImageIcon(artwork.getFilename().toString());
+					artworkLabel.setIcon(art);
+					artworkLabel.setText("");
+			    }
+		 */
+		
 		
 		// ----------------------- Art Panel ---------------------------
 		
@@ -196,7 +228,7 @@ public class ArtSelectionMenu extends JFrame implements ActionListener{
 		artTitleArea.setFocusable(false);
 		
 		infoButton = new JButton();
-		infoButton.setIcon(new ImageIcon("src/Info-Button.png"));
+		infoButton.setIcon(new ImageIcon("Info-Button.png"));
 		infoButton.setBorderPainted(false);
 		infoButton.setBounds(550, 0, 50, 50);
 		infoButton.setFocusable(false);
@@ -252,7 +284,7 @@ public class ArtSelectionMenu extends JFrame implements ActionListener{
 		
 		if (e.getSource() == backButton) {
 			frame.dispose();
-			MainMenu menu = new MainMenu(artwork);
+			MainMenu menu = new MainMenu();
 		}
 		
 		if (e.getSource() == deleteButton) {
