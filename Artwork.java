@@ -96,8 +96,8 @@ public class Artwork {
 	 * sets the date of the artwork
 	 * 
 	 */
-	public void setDate() {
+	public void setDate(String date) {
 //		this.date = LocalDate.now();
-		this.date = LocalDate.now().toString();
+		this.date = date;
 	}
 }

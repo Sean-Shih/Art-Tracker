@@ -27,40 +27,66 @@ import java.awt.datatransfer.DataFlavor;
 import java.io.File;
 import java.util.List;
 
+
+/**
+ * The Main Menu screen for the Art Tracker Application. Users can upload artworks or 
+ * choose to view old artworks from here.
+ * 
+ * @author seanshih
+ * 
+ */
 public class MainMenu extends JFrame implements ActionListener {
 
+	
+	/** Set width for the Upload Panel */
 	private static final int UPPANELWIDTH = 700;
+	/** Set height for the Upload Panel */
 	private static final int UPPANELHEIGHT = 800;
 	
+	/** Set width for the Title Panel that contains the title */
 	private static final int TPANELWIDTH = 500;
+	/** Set height for the Title Panel that contains the title */
 	private static final int TPANELHEIGHT = 100;
 	
+	/** Set width for the Buttons Panel */
 	private static final int BPANELWIDTH = 500;
+	/** Set height for the Buttons Panel */
 	private static final int BPANELHEIGHT = 700;
-
-	private Artwork artwork;
 	
+	/** Create Queries object to allow for calls to the database */
 	Queries query = new Queries();
-	
+	/** Create JFrame object to set up the frame */
 	JFrame frame = new JFrame();
+	
+	/** Button to view old artworks */
 	JButton viewButton;
+	/** Button to select artwork from the local machine */
 	JButton selArtButton;
+	/** Button to confirm upload of current artwork" */
 	JButton uploadButton;
+	/** Button to bring up a small tutorial for the user */
 	JButton infoButton;
+	
+	/** Creates a GetLocalDate object to display the current date in the frame */
 	GetLocalDate date;
+	
+	/** Text area for the user to enter a caption for the artwork */
 	JTextArea captionArea;
+	/** Text area for the user to enter a title for the artwork */
 	JTextArea artTitleArea;
+	
+	/** ImageIcon used to show a preview of the artwork the user wants to upload */
 	ImageIcon previewImage = null;
+	
+	/** File object to represent the artwork file the user uploads */
 	File physFile;
 	
-	
+	/**
+	 * Constructor, creates the frame and any elements in the frame.
+	 */
 	MainMenu() {
 		
-		this.artwork = artwork;
-		
-		// ----------------------- Frame -------------------------------
-		
-//		JFrame frame = new JFrame();
+		/** Frame */
 		frame.setTitle("Daily Art Tracker");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(null);
@@ -68,8 +94,7 @@ public class MainMenu extends JFrame implements ActionListener {
 		frame.setLocationRelativeTo(null);
 		frame.setResizable(false);
 		
-		// -------------------- Upload Art Panel -----------------------
-		
+		/** Upload Panel and all the Java Swing elements associated with it */
 		JPanel uploadPanel = new JPanel();
 		uploadPanel.setLayout(null);
 		uploadPanel.setBackground(Color.darkGray);
@@ -93,14 +118,11 @@ public class MainMenu extends JFrame implements ActionListener {
 		uploadButton.setBounds(375, 650, 200, 60);
 		uploadButton.setFocusable(false);
 		uploadButton.addActionListener(this);
-		
-//		Border border = BorderFactory.createLineBorder(Color.black, 3);
-		
+				
 		date = new GetLocalDate();
 		JLabel dateLabel = new JLabel(date.FormatDate());
 		dateLabel.setFont(new Font("Serif", Font.PLAIN, 30));
 		dateLabel.setForeground(new Color(255, 255, 255));
-//		dateLabel.setBorder(border);
 		dateLabel.setBounds(30, 10, 300, 60);
 		
 		artTitleArea = new JTextArea("Enter Title");
@@ -130,7 +152,7 @@ public class MainMenu extends JFrame implements ActionListener {
                     List<File> files = (List<File>) support.getTransferable()
                             .getTransferData(DataFlavor.javaFileListFlavor);
 
-                    for (File file : files) { // may have to change to explicitly needing to press "upload" to upload
+                    for (File file : files) { 
                         if (file.getName().toLowerCase().matches(".*\\.(png|jpg|jpeg|gif)$")) {
                         	physFile = file;
                         	previewImage = new ImageIcon(file.getAbsolutePath());
@@ -149,11 +171,9 @@ public class MainMenu extends JFrame implements ActionListener {
             }
         });
 		
-		
-		// -------------------- Title Panel ----------------------------
+		/** Title Panel and all associated elements */
 
 		JPanel titlePanel = new JPanel(new BorderLayout());
-//		titlePanel.setBackground(new Color(192,192,192));
 		titlePanel.setBounds(0, 0, TPANELWIDTH, TPANELHEIGHT);
 		
 		JLabel title = new JLabel();
@@ -162,7 +182,7 @@ public class MainMenu extends JFrame implements ActionListener {
 		title.setHorizontalAlignment(JLabel.CENTER);
 		title.setBorder(BorderFactory.createMatteBorder(5, 0, 5, 0, Color.darkGray));
 		
-		// ---------------------- Button Panel --------------------------
+		/** Buttons Panel and all associated elements */
 		
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(null);
@@ -181,7 +201,8 @@ public class MainMenu extends JFrame implements ActionListener {
 		infoButton.setFocusable(false);
 		infoButton.addActionListener(this);
 		
-		
+		/** Adding all necessary components to their respective panels and the 
+		 * adding those panels onto the frame */
 		titlePanel.add(title, BorderLayout.CENTER);
 		uploadPanel.add(selArtButton);
 		uploadPanel.add(uploadButton);
@@ -196,11 +217,10 @@ public class MainMenu extends JFrame implements ActionListener {
 		frame.add(buttonPanel);
 		frame.setVisible(true);
 	}
-	
-	public String getCaption() {
-		return captionArea.getText();
-	}
 		
+	/** 
+	 * Receives inputs from all buttons and executes a code block depending on the source
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
@@ -210,7 +230,7 @@ public class MainMenu extends JFrame implements ActionListener {
 			int response = fileChooser.showOpenDialog(null);
 			
 			if (response == JFileChooser.APPROVE_OPTION) {
-				artwork.setFilename(fileChooser.getSelectedFile().getAbsolutePath());
+				physFile = fileChooser.getSelectedFile();
 			}	
 		}
 		
@@ -224,26 +244,17 @@ public class MainMenu extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null, "No artwork uploaded!", "Error", JOptionPane.ERROR_MESSAGE);	
 
 			} else {
-//				artwork.setCaption(captionArea.getText());
-//				artwork.setArtTitle(artTitleArea.getText());
-//				artwork.setDate();
-//				captionArea.setEditable(false);
-//				artTitleArea.setEditable(false);
-				
-//				query.addArtQuery(artwork.getArtTitle(), artwork.getCaption(), artwork.getFilename(), artwork.getDate());
 				query.addArtQuery(artTitleArea.getText(), captionArea.getText(), physFile.getAbsolutePath(), LocalDate.now().toString());
 				
 				JOptionPane.showMessageDialog(null, "Artwork uploaded!", "Upload confirmation", JOptionPane.INFORMATION_MESSAGE);	
 			}
-			
-			
+				
 		}
 		
 		if (e.getSource() == infoButton) {
 			JOptionPane.showMessageDialog(null, "You can upload an image by dragging it or selecting the \"Select Artwork\" button.\n"
 					+ "Press the \"Upload\" button to upload your artwork for today.\n"
 					+ "Remember to add a title and caption for your artwork!.", "Tutorial", JOptionPane.QUESTION_MESSAGE);	
-
 		}
 		
 	}
